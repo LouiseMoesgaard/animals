@@ -25,67 +25,6 @@ async function loadJSON() {
     // when loaded, prepare data objects
     prepareObjects(jsonData);
 }
-  
-function setButtonEvent() {
-        let buttons = document.querySelectorAll("[data-action=filter]").forEach(elm => {
-            elm.addEventListener("click", filtering);
-        })
-
-        let types = document.querySelectorAll("[data-action=sort]").forEach(elm => {
-            elm.addEventListener("click", sorting);
-        })
-}
-
-function filtering() {
-    let filter = this.dataset.filter;
-
-    if (filter == "*") {
-       filteredAnimals = allAnimals;
-    } else {
-        filteredAnimals = allAnimals.filter(elm => {
-            return elm.type === filter; //filtrerer alle elementer væk, som ikke overholder det boolske udtryk.
-        });
-    }
-    displayList(filteredAnimals);
-}
-
-function sorting() {
-    let sortKey = this.dataset.sort;
-    //let sortDirection = this.dataset.sort-direction;
-
-    if(filteredAnimals.length == 0){
-        allAnimals.sort((a,b)=>{
-            if (a[sortKey] < b[sortKey]) {
-                return -1;
-              }
-              if (a[sortKey] > b[sortKey]) {
-                return 1;
-              } 
-              // a must be equal to b
-              return 0;
-        }) 
-        // if(sortDirection == "desc") {
-        //     allAnimals.reverse();
-        // } else {
-
-        // };
-
-        displayList(allAnimals);
-    } else {
-        filteredAnimals.sort((a,b)=>{
-            if (a[sortKey] < b[sortKey]) {
-                return -1;
-              }
-              if (a[sortKey] > b[sortKey]) {
-                return 1;
-              }
-              // a must be equal to b
-              return 0;
-        });
-        displayList(filteredAnimals);
-    }
-
-}
 
 function prepareObjects(jsonData) {
     allAnimals = jsonData.map(preapareObject);
@@ -104,7 +43,75 @@ function preapareObject(jsonObject) {
 
     return animal;
 }
+  
+function setButtonEvent() {
+        let buttons = document.querySelectorAll("[data-action=filter]").forEach(elm => {
+            elm.addEventListener("click", filtering);
+        })
 
+        let types = document.querySelectorAll("[data-action=sort]").forEach(elm => {
+            elm.addEventListener("click", sorting);
+        })
+}
+
+function filtering() {
+    let filter = this.dataset.filter;
+
+    if (filter === "*") {
+       filteredAnimals = allAnimals;
+    } else {
+        filteredAnimals = allAnimals.filter(elm => {
+            return elm.type === filter; //filtrerer alle elementer væk, som ikke overholder det boolske udtryk.
+        });
+    }
+    displayList(filteredAnimals);
+}
+
+function sorting() {
+    let sortKey = this.dataset.sort;
+    console.log(this.dataset);
+    let sortDirection = this.dataset.sortDirection;
+
+    if(filteredAnimals.length == 0){
+        allAnimals.sort((a,b)=>{
+            if (a[sortKey] < b[sortKey]) {
+                return -1;
+              }
+              if (a[sortKey] > b[sortKey]) {
+                return 1;
+              } 
+              // a must be equal to b
+              return 0;
+        }) 
+        if(sortDirection === "desc") {
+            allAnimals.reverse();
+            this.dataset.sortDirection = "asc";
+        } else {
+            this.dataset.sortDirection = "desc";
+        };
+        displayList(allAnimals);
+    } else {
+        filteredAnimals.sort((a,b)=>{
+            if (a[sortKey] < b[sortKey]) {
+                return -1;
+              }
+              if (a[sortKey] > b[sortKey]) {
+                return 1;
+              }
+              // a must be equal to b
+              return 0;
+        });
+
+        if(sortDirection === "desc") {
+            filteredAnimals.reverse();
+            this.dataset.sortDirection = "asc";
+        } else {
+            this.dataset.sortDirection = "desc";
+        };
+        displayList(filteredAnimals);
+    }
+
+}
 
 function displayList(animals) {
     // clear the list
